@@ -1,0 +1,80 @@
+#!/usr/bin/env python
+# works with python 2 and 3
+from __future__ import print_function
+import re
+import calendar
+import datetime
+
+c = calendar.LocaleTextCalendar(6)
+
+''' for debugging
+import sys
+if len(sys.argv) > 1:
+    import time
+    offset=int(sys.argv[1])
+    now = time.time() + 86400*offset
+    today = datetime.date.fromtimestamp(now)
+else:
+    today = datetime.date.today()
+'''
+today = datetime.date.today()
+
+re_today = re.compile('(.*? )({})( .*)'.format(today.day))
+
+cur_month = today.month
+cur_month_year = today.year
+
+prev_month = cur_month - 1
+prev_month_year = cur_month_year
+
+if prev_month < 1:
+    prev_month += 12
+    prev_month_year -= 1
+
+next_month = cur_month + 1
+next_month_year = cur_month_year
+
+if next_month > 12:
+    next_month -= 12
+    next_month_year += 1
+
+prev_month_calendar = c.formatmonth(prev_month_year, prev_month).split('\n')
+cur_month_calendar = c.formatmonth(cur_month_year, cur_month).split('\n')
+next_month_calendar = c.formatmonth(next_month_year, next_month).split('\n')
+
+max_len = 0
+for i in prev_month_calendar:
+    max_len = max(max_len, len(i))
+
+out = list()
+for i,s in enumerate(prev_month_calendar):
+    out.append('{0:{width}s} '.format(s, width=max_len))
+
+max_len = 0
+for i in cur_month_calendar:
+    max_len = max(max_len, len(i))
+
+for i,s in enumerate(cur_month_calendar):
+    s = ' {0:{width}s} '.format(s, width=max_len)
+    m = re_today.search(s)
+    if m and i > 1:
+        s = m.group(1) + '\033[7m' + m.group(2) + '\033[m' + m.group(3)
+    if i < len(out)-1:
+        out[i] += '{0:{width}s} '.format(s, width=max_len)
+    else:
+        out.append('{0:{width}s} '.format(s, width=max_len))
+        
+max_len = 0
+for i in next_month_calendar:
+    max_len = max(max_len, len(i))
+
+for i,s in enumerate(next_month_calendar):
+    if i < len(out)-1:
+        out[i] += '{0:{width}s}'.format(s, width=max_len)
+    else:
+        out.append(' {0:{width}s}'.format(s, width=max_len))
+
+    # last pass, so print it out while we are here
+    print(out[i])
+
+# vim: ai sw=4 ts=4 showmatch et 
