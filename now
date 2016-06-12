@@ -2,6 +2,7 @@
 # works with python 2 and 3
 from __future__ import print_function
 import re
+from itertools import chain
 import calendar
 import datetime
 
@@ -38,17 +39,28 @@ if next_month > 12:
     next_month -= 12
     next_month_year += 1
 
-prev_month_calendar = c.formatmonth(prev_month_year, prev_month).split('\n')
-cur_month_calendar = c.formatmonth(cur_month_year, cur_month).split('\n')
-next_month_calendar = c.formatmonth(next_month_year, next_month).split('\n')
+prev_month_calendar = c.formatmonth(prev_month_year, prev_month)
+prev_month_calendar = prev_month_calendar.split('\n')
+
+cur_month_calendar  = c.formatmonth(cur_month_year, cur_month)
+cur_month_calendar  = cur_month_calendar.split('\n')
+
+next_month_calendar = c.formatmonth(next_month_year, next_month)
+next_month_calendar = next_month_calendar.split('\n')
+
+max_height = max(len(i) for i in (prev_month_calendar, cur_month_calendar,
+                                  next_month_calendar))
 
 max_len = 0
 for i in prev_month_calendar:
     max_len = max(max_len, len(i))
 
-out = list()
-for i,s in enumerate(prev_month_calendar):
+out = []
+for s in prev_month_calendar:
     out.append('{0:{width}s} '.format(s, width=max_len))
+
+while len(out) < max_height:
+    out.append('{0:{width}s}'.format('', width=max_len))
 
 max_len = 0
 for i in cur_month_calendar:
