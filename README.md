@@ -1,7 +1,11 @@
 # now
 Simple 3 month calendar utility
 
-A ripoff/reimplentation of a Perl utility by Tom Christiansen.
+A ripoff/reimplentation of a Perl utility by Tom Christiansen.  Tom's
+impementation called the commandline cal program and then did the reverse
+video on today.  This implementation in Python uses the standard library
+calendar module instead of calling an external binary.  This utility works
+with Python 2 and 3.
 
 Prints a 3 month calendar with the current month centered and the current day in reverse video. 
 

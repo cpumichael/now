@@ -2,7 +2,6 @@
 # works with python 2 and 3
 from __future__ import print_function
 import re
-from itertools import chain
 import calendar
 import datetime
 
